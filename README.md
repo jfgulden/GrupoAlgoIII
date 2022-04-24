@@ -1,1 +1,1 @@
-# AlgoIII - Ejercicios Para Entregar
+# Algo3 - Ejercicios Para Entregar
