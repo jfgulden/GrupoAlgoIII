@@ -147,32 +147,38 @@ Object subclass: #Numero
 	poolDictionaries: ''
 	category: 'Numeros-Parte1-Ejercicio'!
 
-!Numero methodsFor: 'arithmetic operations'!
+!Numero methodsFor: 'arithmetic operations' stamp: 'SJ 5/4/2022 22:21:29'!
 * arg1
+	^self subclassResponsibility.
+	"
 	(type = #Entero and: [ arg1 type = #Entero ]) ifTrue: [ ^ self class with: value * arg1 integerValue ].
 	(type = #Fraccion and: [ arg1 type = #Fraccion ]) ifTrue: [ ^ self class
 			with: numerator * arg1 numerator
 			over: denominator * arg1 denominator ].
-	self error: 'Tipo de número no soportado'.! !
+	self error: 'Tipo de número no soportado'."! !
 
-!Numero methodsFor: 'arithmetic operations'!
+!Numero methodsFor: 'arithmetic operations' stamp: 'SJ 5/4/2022 22:50:19'!
 + arg1
+	^self subclassResponsibility.
+"
 	| temp2 temp3 |
+
 	(type = #Entero and: [ arg1 type = #Entero ]) ifTrue: [ ^ self class with: value + arg1 integerValue ].
 	(type = #Fraccion and: [ arg1 type = #Fraccion ]) ifTrue: [
 		temp2 _ numerator * arg1 denominator + (denominator * arg1 numerator).
 		temp3 _ denominator * arg1 denominator.
 		^ self class
 			with: temp2
-			over: temp3 ].
-	self error: 'Tipo de número no soportado'.! !
+			over: temp3 ]."
+	"self error: 'Tipo de número no soportado'."! !
 
-!Numero methodsFor: 'arithmetic operations'!
+!Numero methodsFor: 'arithmetic operations' stamp: 'SJ 5/4/2022 22:28:56'!
 negated
-	type = #Entero ifTrue: [ ^ self * (self class with: -1) ].
+	^self subclassResponsibility.
+	"type = #Entero ifTrue: [ ^ self * (self class with: -1) ].
 	type = #Fraccion ifTrue: [ ^ self class
 			with: numerator * (self class with: -1)
-			over: denominator ].! !
+			over: denominator ]."! !
 
 
 !Numero methodsFor: 'testing'!
@@ -219,40 +225,50 @@ type
 	^ type.! !
 
 
-!Numero methodsFor: 'printing'!
+!Numero methodsFor: 'printing' stamp: 'SJ 5/4/2022 22:56:47'!
 printOn: arg1
+	^self subclassResponsibility.
+"
 	type = #Entero ifTrue: [ arg1 print: value ].
 	type = #Fraccion ifTrue: [
 		arg1
 			print: numerator;
 			nextPut: $/;
-			print: denominator ].! !
+			print: denominator ]."! !
 
 
-!Numero methodsFor: 'comparing'!
+!Numero methodsFor: 'comparing' stamp: 'SJ 5/4/2022 23:09:41'!
 = arg1
+	^self subclassResponsibility.
+"
 	^ (arg1 isKindOf: self class) and: [
 		type = arg1 type and: [
 			type = #Entero
 				ifTrue: [ value = arg1 integerValue ]
 				ifFalse: [
-					type = #Fraccion ifTrue: [ numerator * arg1 denominator = (denominator * arg1 numerator) ]]]].! !
+					type = #Fraccion ifTrue: [ numerator * arg1 denominator = (denominator * arg1 numerator) ]]]]."! !
 
-!Numero methodsFor: 'comparing'!
+!Numero methodsFor: 'comparing' stamp: 'SJ 5/4/2022 22:47:18'!
 hash
+	^self subclassResponsibility.
+"
 	type = #Entero ifTrue: [ ^ value hash ].
-	type = #Fraccion ifTrue: [ ^ (numerator hash / denominator hash) hash ].! !
+	type = #Fraccion ifTrue: [ ^ (numerator hash / denominator hash) hash ]."! !
 
 
-!Numero methodsFor: 'arithmetic operations - private'!
+!Numero methodsFor: 'arithmetic operations - private' stamp: 'SJ 5/4/2022 22:53:13'!
 // arg1
+	^self subclassResponsibility.
+"
 	type = #Entero ifTrue: [ ^ self class with: value // arg1 integerValue ].
-	self error: 'Tipo de número no soportado'.! !
+	self error: 'Tipo de número no soportado'."! !
 
-!Numero methodsFor: 'arithmetic operations - private'!
+!Numero methodsFor: 'arithmetic operations - private' stamp: 'SJ 5/4/2022 22:54:56'!
 greatestCommonDivisorWith: arg1
+	^self subclassResponsibility.
+"
 	type = #Entero ifTrue: [ ^ self class with: (value gcd: arg1 integerValue) ].
-	self error: 'Tipo de número no soportado'.! !
+	self error: 'Tipo de número no soportado'."! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -294,26 +310,63 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte1-Ejercicio'!
 
-!Entero methodsFor: 'as yet unclassified'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'SJ 5/4/2022 22:24:10'!
+* arg1
+	^ self class with: value * arg1 integerValue.! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'SJ 5/4/2022 22:10:42'!
 + arg1
 	^ self class with: value + arg1 integerValue.! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'SJ 5/4/2022 22:29:22'!
+negated
+	^ self * (self class with: -1) ! !
+
+
+!Entero methodsFor: 'testing'!
+isNegative
+	^ value < 0.! !
+
+!Entero methodsFor: 'testing'!
+isOne
+	^ value = 1.! !
+
+!Entero methodsFor: 'testing'!
+isZero
+	^ value = 0.! !
+
+
+
+
+!Entero methodsFor: 'printing' stamp: 'SJ 5/4/2022 22:37:59'!
+printOn: arg1
+	^arg1 print: value.! !
+
+
+!Entero methodsFor: 'comparing' stamp: 'SJ 5/4/2022 23:15:56'!
+= arg1
+"	(arg1 isKindOf: self class) and: [
+		type = arg1 type"
+	^value = arg1 integerValue.! !
+
+!Entero methodsFor: 'comparing' stamp: 'SJ 5/4/2022 22:46:19'!
+hash
+	^ value hash.! !
+
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'SJ 5/4/2022 22:54:08'!
+// arg1
+	^ self class with: value // arg1 integerValue.! !
+
+!Entero methodsFor: 'arithmetic operations - private' stamp: 'SJ 5/4/2022 22:55:29'!
+greatestCommonDivisorWith: arg1
+	^ self class with: (value gcd: arg1 integerValue).! !
+
 
 !Entero methodsFor: 'as yet unclassified'!
 initialize: arg1
 	self initializeWith: arg1.
 	^ self new.! !
-
-!Entero methodsFor: 'as yet unclassified'!
-isNegative
-	^ value < 0.! !
-
-!Entero methodsFor: 'as yet unclassified'!
-isOne
-	^ value = 1.! !
-
-!Entero methodsFor: 'as yet unclassified'!
-isZero
-	^ value = 0.! !
 
 
 !classDefinition: #Fraccion category: 'Numeros-Parte1-Ejercicio'!
@@ -323,14 +376,55 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte1-Ejercicio'!
 
-!Fraccion methodsFor: 'as yet unclassified'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'SJ 5/4/2022 22:25:27'!
+* arg1
+	^ self class
+		with: numerator * arg1 numerator
+		over: denominator * arg1 denominator ! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'SJ 5/4/2022 22:12:04'!
++ arg1
+	|temp2 temp3|
+	temp2 _ numerator * arg1 denominator + (denominator * arg1 numerator).
+		temp3 _ denominator * arg1 denominator.
+		^ self class
+			with: temp2
+			over: temp3 ! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'SJ 5/4/2022 22:29:58'!
+negated
+	^ self class
+		with: numerator * (self class with: -1)
+		over: denominator.! !
+
+
+!Fraccion methodsFor: 'testing'!
 isNegative
 	^ denominator < 0.! !
 
-!Fraccion methodsFor: 'as yet unclassified'!
+!Fraccion methodsFor: 'testing'!
 isOne
 	^ false.! !
 
-!Fraccion methodsFor: 'as yet unclassified'!
+!Fraccion methodsFor: 'testing'!
 isZero
 	^ false.! !
+
+
+
+
+!Fraccion methodsFor: 'printing' stamp: 'SJ 5/4/2022 22:41:22'!
+printOn: arg1
+	arg1 print: numerator;
+	nextPut: $/;
+	print: denominator.! !
+
+
+!Fraccion methodsFor: 'comparing' stamp: 'SJ 5/4/2022 23:08:25'!
+= arg1
+	^numerator * arg1 denominator = (denominator * arg1 numerator).! !
+
+!Fraccion methodsFor: 'comparing' stamp: 'SJ 5/4/2022 22:46:55'!
+hash
+	^(numerator hash / denominator hash) hash.! !
+
