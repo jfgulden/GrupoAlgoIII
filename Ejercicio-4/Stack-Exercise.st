@@ -1,4 +1,4 @@
-!classDefinition: #OOStackTest category: #'Stack-Exercise'!
+!classDefinition: #OOStackTest category: 'Stack-Exercise'!
 TestCase subclass: #OOStackTest
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -137,7 +137,7 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 ! !
 
 
-!classDefinition: #SentenceFinderByPrefixTest category: #'Stack-Exercise'!
+!classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -145,16 +145,43 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	category: 'Stack-Exercise'!
 
 
-!classDefinition: #OOStack category: #'Stack-Exercise'!
+!classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: ''
+	instanceVariableNames: 'stack'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!OOStack methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 23:22:08'!
+initialize
+	stack := OrderedCollection new.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 23:28:59'!
+isEmpty
+	^stack size = 0.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 23:45:23'!
+pop
+	(stack isEmpty) ifTrue: [^self error: self class stackEmptyErrorDescription].
+	^stack removeLast
+! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 23:30:11'!
+push: anElement
+	stack add: anElement.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 23:36:28'!
+size
+	^stack size.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 23:46:52'!
+top
+	(stack isEmpty) ifTrue: [^self error: self class stackEmptyErrorDescription].
+	^stack last.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'OOStack class' category: #'Stack-Exercise'!
+!classDefinition: 'OOStack class' category: 'Stack-Exercise'!
 OOStack class
 	instanceVariableNames: ''!
 
@@ -164,7 +191,7 @@ stackEmptyErrorDescription
 	^ 'Stack is empty'! !
 
 
-!classDefinition: #SentenceFinderByPrefix category: #'Stack-Exercise'!
+!classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
 	instanceVariableNames: ''
 	classVariableNames: ''
