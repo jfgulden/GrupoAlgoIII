@@ -364,26 +364,27 @@ Numero subclass: #Entero
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'SJ 5/9/2022 03:15:00'!
-* aMultiplier 
-	^aMultiplier MultiplyAnEntero: self.
+!Entero methodsFor: 'arithmetic operations' stamp: 'JFG 5/9/2022 14:51:05'!
+* aMultiplicand
 	
+	^aMultiplicand multipliesAnEntero: self.
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'SJ 5/9/2022 03:56:46'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'JFG 5/9/2022 14:48:08'!
 + anAdder 
-	^anAdder SumAnEntero: self.
-
 	
+	^anAdder sumsAnEntero: self.
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'SJ 5/9/2022 03:45:56'!
-- aSubtrahend
-	^aSubtrahend negated SumAnEntero: self.! !
+!Entero methodsFor: 'arithmetic operations' stamp: 'JFG 5/9/2022 14:48:11'!
+- aSubtrahend 
+	
+	^aSubtrahend negated sumsAnEntero: self.! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'SJ 5/9/2022 03:56:54'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'JFG 5/9/2022 14:53:39'!
 / aDivisor 
-	^aDivisor DivideAnEntero: self.! !
+	
+	^aDivisor dividesAnEntero: self.! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -458,32 +459,36 @@ greatestCommonDivisorWith: anEntero
 	^self class with: (value gcd: anEntero integerValue)! !
 
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 03:56:17'!
-DivideAFraccion: aDividend
-	^aDividend numerator / (aDividend denominator * self).! !
+!Entero methodsFor: 'private' stamp: 'JFG 5/9/2022 14:54:23'!
+dividesAFraccion: aDividend
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 03:49:47'!
-DivideAnEntero: aDividend
-	^Fraccion 
-		with: aDividend 
+	^ aDividend numerator / (aDividend denominator * self).! !
+
+!Entero methodsFor: 'private' stamp: 'JFG 5/9/2022 14:52:49'!
+dividesAnEntero: aDividend
+	^ Fraccion
+		with: aDividend
 		over: self.! !
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 02:17:46'!
-MultiplyAFraccion: aMultiplicand
-	^(aMultiplicand numerator * self)/ aMultiplicand denominator.! !
+!Entero methodsFor: 'private' stamp: 'JFG 5/9/2022 14:55:51'!
+multipliesAFraccion: aMultiplier
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 03:14:33'!
-MultiplyAnEntero: aMultiplicand
-	^self class with: value * aMultiplicand integerValue.! !
+	^ aMultiplier numerator * self / aMultiplier denominator.! !
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 02:26:37'!
-SumAFraccion: anAugend
+!Entero methodsFor: 'private' stamp: 'JFG 5/9/2022 14:56:14'!
+multipliesAnEntero: aMultiplier
 
-	^(anAugend denominator * self + anAugend numerator) / anAugend denominator.! !
+	^ self class with: value * aMultiplier integerValue.! !
 
-!Entero methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 03:43:03'!
-SumAnEntero: anAugend
-	^self class with: anAugend integerValue + self integerValue.! !
+!Entero methodsFor: 'private' stamp: 'JFG 5/9/2022 14:46:42'!
+sumsAFraccion: anAugend
+
+	^ anAugend denominator * self + anAugend numerator / anAugend denominator.! !
+
+!Entero methodsFor: 'private' stamp: 'JFG 5/9/2022 14:47:35'!
+sumsAnEntero: anAugend
+
+	^ self class with: anAugend integerValue + self integerValue.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -511,25 +516,26 @@ Numero subclass: #Fraccion
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'SJ 5/9/2022 02:32:26'!
-* aMultiplier 
-	^ aMultiplier MultiplyAFraccion: self.
-
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'JFG 5/9/2022 15:01:05'!
+* aMultiplicand
+	
+	^aMultiplicand multipliesAFraccion: self.
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'SJ 5/9/2022 02:32:36'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'JFG 5/9/2022 14:46:30'!
 + anAdder 
-	^anAdder SumAFraccion: self.! !
+	
+	^anAdder sumsAFraccion: self.! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'SJ 5/9/2022 03:41:44'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'JFG 5/9/2022 14:46:37'!
 - aSubtrahend 
-	^aSubtrahend negated SumAFraccion: self.
+	
+	^aSubtrahend negated sumsAFraccion: self.! !
 
-! !
-
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'SJ 5/9/2022 03:57:11'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'JFG 5/9/2022 14:54:50'!
 / aDivisor 
-	^aDivisor DivideAFraccion: self.! !
+	
+	^aDivisor dividesAFraccion: self.! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -590,52 +596,44 @@ printOn: aStream
 		print: denominator ! !
 
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 03:53:45'!
-DivideAFraccion: aDividend
-	"|newNumerator newDenominator|
-	
-	newNumerator := aDividend numerator * denominator.
-	newDenominator := aDividend denominator * numerator.
-	
-	^newNumerator / newDenominator.
-	"^(aDividend numerator * denominator) / (aDividend denominator * numerator)! !
+!Fraccion methodsFor: 'private' stamp: 'JFG 5/9/2022 14:55:26'!
+dividesAFraccion: aDividend
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 03:50:57'!
-DivideAnEntero: aDividend
-	|newNumerator newDenominator|
-		
-	newNumerator := aDividend * denominator.
-	newDenominator  := numerator.
-		
-	^newNumerator / newDenominator! !
+	^ aDividend numerator * denominator / (aDividend denominator * numerator).! !
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 02:15:11'!
-MultiplyAFraccion: aMultiplicand
-	^(numerator * aMultiplicand numerator) / (denominator * aMultiplicand denominator).! !
+!Fraccion methodsFor: 'private' stamp: 'JFG 5/9/2022 14:55:44'!
+dividesAnEntero: aDividend
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 03:12:08'!
-MultiplyAnEntero: aMultiplicand
-	^(aMultiplicand *  numerator) / denominator.! !
+	| temp2 temp3 |
+	temp2 _ aDividend * denominator.
+	temp3 _ numerator.
+	^ temp2 / temp3.! !
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 02:30:19'!
-SumAFraccion: anAugend
+!Fraccion methodsFor: 'private' stamp: 'JFG 5/9/2022 14:56:04'!
+multipliesAFraccion: aMultiplier
 
-	| newNumerator newDenominator |
-	
-	newNumerator := (numerator * anAugend denominator) + (denominator * anAugend numerator).
-	newDenominator := denominator * anAugend denominator.
-	
-	^newNumerator / newDenominator.! !
+	^ numerator * aMultiplier numerator / (denominator * aMultiplier denominator).! !
 
-!Fraccion methodsFor: 'as yet unclassified' stamp: 'SJ 5/9/2022 03:18:30'!
-SumAnEntero: anAugend
-	|newNumerator newDenominator|
-			
-	newNumerator := (anAugend * denominator) + numerator.
-	newDenominator := denominator.
-			
-	^newNumerator / newDenominator.
-			! !
+!Fraccion methodsFor: 'private' stamp: 'JFG 5/9/2022 14:56:24'!
+multipliesAnEntero: aMultiplier
+
+	^ aMultiplier * numerator / denominator.! !
+
+!Fraccion methodsFor: 'private' stamp: 'JFG 5/9/2022 14:56:50'!
+sumsAFraccion: anAugend
+
+	| temp2 temp3 |
+	temp2 _ numerator * anAugend denominator + (denominator * anAugend numerator).
+	temp3 _ denominator * anAugend denominator.
+	^ temp2 / temp3.! !
+
+!Fraccion methodsFor: 'private' stamp: 'JFG 5/9/2022 14:57:17'!
+sumsAnEntero: anAugend
+
+	| temp2 temp3 |
+	temp2 _ anAugend * denominator + numerator.
+	temp3 _ denominator.
+	^ temp2 / temp3.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
