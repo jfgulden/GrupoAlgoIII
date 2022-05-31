@@ -189,7 +189,7 @@ test18MarsRoverMovesAndRotatesAccordingToASetOfCommands
 	self assert: marsRover position = (-1@0).
 	! !
 
-!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'SJ 5/29/2022 21:40:54'!
+!MarsRoverTests methodsFor: 'as yet unclassified' stamp: 'SJ 5/30/2022 20:58:05'!
 test19MarsRoverMovesAndRotatesWhileCommandsAreValid
 		
 	| marsRover setOfCommands|
@@ -205,7 +205,7 @@ test19MarsRoverMovesAndRotatesWhileCommandsAreValid
 	
 	self should: [marsRover executeCommands: setOfCommands]
 		raise: Error
-		withExceptionDo: [ :anError | self assert: Command invalidCommandErrorDescription equals: anError messageText].
+		withExceptionDo: [ :anError | self assert: (Command invalidCommandErrorDescription) equals: (anError messageText)].
 		
 	self assert: marsRover cardinalPoint = $S.
 	self assert: marsRover position = (0@2).! !
@@ -445,11 +445,11 @@ invalidCommandErrorDescription
 	
 	^ 'Command not valid'.! !
 
-!Command class methodsFor: 'as yet unclassified' stamp: 'SJ 5/29/2022 21:45:52'!
+!Command class methodsFor: 'as yet unclassified' stamp: 'SJ 5/30/2022 21:05:22'!
 with: aCommand associatedTo: aMarsRover
 
 	| subclass |
-	subclass := self subclasses detect: [:aSubclass | aSubclass canInstantiateWith: aCommand] ifNone: [^self class error: self class invalidCommandErrorDescription].
+	subclass := self subclasses detect: [:aSubclass | aSubclass canInstantiateWith: aCommand] ifNone: [^Command error: (self invalidCommandErrorDescription)].
 	 
 	^subclass new initializeWith: aMarsRover.! !
 
@@ -690,4 +690,3 @@ MarsRover class
 inPosition: aPosition facingTo: aCardinalPoint
 	
 	^self new initializeInPosition: aPosition facingTo: aCardinalPoint ! !
-
