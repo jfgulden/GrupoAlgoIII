@@ -1,3 +1,338 @@
+!classDefinition: #PortfolioTests category: 'ServiciosFinancieros-Ejercicio'!
+TestCase subclass: #PortfolioTests
+	instanceVariableNames: 'account1 account2 deposit11 deposit22 accountWithoutTransactions portfolioWithAccount1 portfolioWithAccount1AndAccount2 portfolioWithAccount2AndPortfolio portfolioWithAccount1AndAccountWithoutTransactions emptyPortfolio portfolioWithAccountWithoutTransactions portfolioWithPortfolio transactionss portfolioWithAccount3 account3'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:29:33'!
+test10givenANotEmptyPortfolioWithTransactionsRegisteredTheBalanceCanBeCalculated
+	"Obtenemos el balance de un portfolio"
+	self assert: portfolioWithAccount1AndAccount2 balance equals: (150 * peso).
+	
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:16:33'!
+test11givenAPortfolioWithAnotherPortfolioContainigAccountsWithRegisteredTransactionsTheTotalBalanceCanBeCalculated
+	"Obtenemos el balance de un portfolio con un portfolio adentro"
+	
+	| portfolio portfolioAux anAccount1 anAccount2 |
+	
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+	
+	anAccount1 := ReceptiveAccount new.
+	anAccount2 := ReceptiveAccount new.
+	
+	Deposit register: 100 * peso on: anAccount2.
+	Deposit register: 50 * peso on: anAccount1.
+	
+	portfolioAux addElement: anAccount1.
+
+	portfolio addElement: portfolioAux.
+	portfolio addElement: anAccount2.
+	
+	self assert: portfolio balance equals: (150 * peso).
+	
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:34:30'!
+test12givenAPortfolioContainingAnAccountThePortfolioRegistersTheTransactionOfSaidAccount
+	"Chequeamos que la única cuenta que se encuentra en el portfolio haya registrado una transacción"
+	
+	self assert: (portfolioWithAccount2AndPortfolio hasRegistered: deposit11).
+	
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:36:16'!
+test13givenAPortfolioContainingTwoAccountsButOnlyOneWithARegisteredTransactionThePortfolioRegistersTheTransaction
+	"Chequeamos que la segunda cuenta que se encuentra en el portfolio haya registrado una transacción"
+	"
+	| portfolio anAccount1 anAccount2 deposit |
+	
+	portfolio := Portfolio new.
+	anAccount1 := ReceptiveAccount new.
+	anAccount2 := ReceptiveAccount new.
+
+	
+	deposit := Deposit register: 100 * peso on: anAccount2.
+
+	portfolio addElement: anAccount1.
+	portfolio addElement: anAccount2.
+"
+	self assert: (portfolioWithAccount1AndAccountWithoutTransactions hasRegistered: deposit11).
+	
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:37:14'!
+test14givenAnEmptyPortfolioTheTotalBalanceIsZero
+	"Chequeamos que un portfolio vacio tenga balance=0"
+
+	self assert: emptyPortfolio balance equals: 0.
+	
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:38:22'!
+test15givenAPortfolioContainingAnAccountWithNoTransactionsTheBalanceOfThePortfolioIsZero
+	"Chequeamos que un portfolio no vacio con sus cuentas con balance = 0 tenga balance=0"
+
+	self assert: portfolioWithAccountWithoutTransactions balance equals: 0.
+	
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:40:27'!
+test16givenAPortfolioWithAnotherPortfolioContainingAnAccountWithATransactionTheFirstPortfolioRegistersTheTransaction
+	"Chequeamos que un portfolio con un portfolio dentro encuentre la transacción"
+	"
+	| portfolio portfolioAux anAccount deposit |
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+
+	anAccount := ReceptiveAccount new.
+	deposit := Deposit register: 100 * peso on: anAccount.
+	
+	portfolioAux addElement: anAccount.
+	portfolio addElement: portfolioAux.
+	"
+	self assert: (portfolioWithPortfolio hasRegistered: deposit11).
+
+	
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:41:24'!
+test17givenAPortfolioContainingAnAccountWithNoTransactionsThePortfolioDoesNotRegisterTheTransactionSent
+	"Chequeamos que un portfolio con un portfolio sin transacciones registradas no encuentre ninguna"
+
+	self deny: (portfolioWithAccountWithoutTransactions hasRegistered: deposit11).
+		
+	
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:42:46'!
+test18givenAnEmptyPortfolioTheTransactionSentIsNotRegistered
+	"Chequeamos que un portfolio vacio no encuentre transacciones registradas que se hicieron en una cuenta no incluida en el portfafolio"
+	
+	self deny: (emptyPortfolio hasRegistered: deposit11).
+	
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:49:46'!
+test19givenAPortfolioContainingAnAccountWithTransactionsThePortfolioObtainsAllTransactions
+	"Chequeamos que un portfolio con una cuenta pueda obtener todas las transacciones de esa cuenta"
+
+	self assert: (portfolioWithAccount3 transactions) equals: transactionss.
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:50:08'!
+test20givenAnEmptyPortfolioNoTransactionCanBeObtained
+	"Chequeamos que un portfolio vacio no tenga transacciones"
+	
+	| portfolio |
+	portfolio := Portfolio new.
+
+	self assert: (emptyPortfolio transactions) equals: nil.
+	
+	
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:16:33'!
+test21givenAPortfolioContainingAnAccountWithNoTransactionsThereAreNoTransactionsInPortfolio
+	"Chequeamos que un portfolio vacio no tenga transacciones registradas"
+	
+	| portfolio anAccount transactions |
+	portfolio := Portfolio new.
+	anAccount := ReceptiveAccount new.
+	transactions := OrderedCollection new.
+
+	portfolio addElement: anAccount.
+
+	self assert: (portfolio transactions) equals: transactions.
+	
+	
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:16:33'!
+test22givenAPortfolioContainingAnotherPortfolioWithANotEmptyAccountThePortfolioObtainsAllTransactions
+	"Chequeamos que un portfolio con un portfolio dentro obtenga todas las transacciones registradas en una cuenta incluida en este último"
+	
+	| portfolio portfolioAux anAccount deposit transactions |
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+
+	anAccount := ReceptiveAccount new.
+	deposit := Deposit register: 100 * peso on: anAccount.
+	transactions := OrderedCollection new.
+	transactions add: deposit.
+	portfolioAux addElement: anAccount.
+	portfolio addElement: portfolioAux.
+	
+	self assert: (portfolio transactions) equals: transactions.
+	
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:16:33'!
+test23canNotAddTheSameAccountTwiceInAPortfolio
+	"Chequeamos que no se pueda agregar una cuenta ya agregada"
+	
+	| portfolio anAccount |
+	portfolio := Portfolio new.
+
+	anAccount := ReceptiveAccount new.
+	portfolio addElement: anAccount.
+	
+	self
+		should: [ portfolio addElement: anAccount ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio elementAlreadyIncludedErrorDescription].
+		
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:16:33'!
+test24canNotAddAnAccountToAPortfolioThatContainsAnotherPortfolioWithTheSameAccount
+	"Chequeamos que no se pueda agregar una cuenta que ya ha sido agregada a un portfolio agregado"
+	
+	| portfolio portfolioAux anAccount |
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+	anAccount := ReceptiveAccount new.
+	
+	portfolioAux addElement: anAccount.
+	portfolio addElement: portfolioAux.
+	
+	self
+		should: [ portfolio addElement: anAccount ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio elementAlreadyIncludedErrorDescription].
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:16:33'!
+test25canNotAddTheSamePortfolioInAPortfolio
+	"Chequeamos que no se pueda agregar un portfolio que sea igual a self"
+	
+	| portfolio portfolioAux anAccount |
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+	anAccount := ReceptiveAccount new.
+	
+	portfolioAux addElement: anAccount.
+	portfolio addElement: portfolioAux.
+	
+	self
+		should: [ portfolio addElement: portfolio ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio canNotAddItselfErrorDescription].
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:16:33'!
+test26canNotAddTheSameAccountInAPortfolioThatIsContainedInAnotherPortfolioThatAlreadyAddedTheAccount
+	"Chequeamos que no se pueda agregar una cuenta que ya se agrego"
+	
+	| portfolio portfolioAux anAccount |
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+	anAccount := ReceptiveAccount new.
+	
+	portfolio addElement: anAccount.
+	portfolio addElement: portfolioAux.
+	
+	self
+		should: [ portfolioAux addElement: anAccount ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText equals: Portfolio elementAlreadyIncludedErrorDescription].
+	
+		! !
+
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:16:33'!
+test27canNotAddAPortfolioInAPortfolioWithAnAccountAlreadyAddedInSecondPortfolio
+	"Chequeamos que no se pueda agregar un portfolio a otro portfolio con cuentas agregadas iguales"
+	
+	| portfolio portfolioAux anAccount |
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+	anAccount := ReceptiveAccount new.
+	
+	portfolio addElement: anAccount.
+	portfolioAux addElement: anAccount.
+	
+	self
+		should: [ portfolio addElement: portfolioAux ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText equals: Portfolio elementAlreadyIncludedErrorDescription].
+	
+		! !
+
+
+!PortfolioTests methodsFor: 'setup' stamp: 'JFG 6/9/2022 00:49:11'!
+setUp
+	
+	| deposit3 deposit4 |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	account3 := ReceptiveAccount new.
+
+	
+	deposit11 := Deposit register: 100 * peso on: account1 .
+	deposit22 :=  Deposit register: 50 * peso on: account2.
+	deposit3 := Deposit register: 100 * peso on: account3.
+	deposit4 := Deposit register: 50 * peso on: account3.
+	
+	transactionss := OrderedCollection new.
+	transactionss addAll: {deposit3. deposit4}.
+	
+	accountWithoutTransactions := ReceptiveAccount new.
+	
+	portfolioWithAccount1 := Portfolio new.
+	portfolioWithAccount1 addElement: account1.
+	
+	portfolioWithAccount1AndAccount2 := Portfolio new.
+	portfolioWithAccount1AndAccount2 addElement: account1.
+	portfolioWithAccount1AndAccount2 addElement: account2.
+	
+	portfolioWithAccount2AndPortfolio := Portfolio new.
+	portfolioWithAccount2AndPortfolio addElement: portfolioWithAccount1.
+	portfolioWithAccount2AndPortfolio addElement: account2.
+	
+	portfolioWithAccount1AndAccountWithoutTransactions := Portfolio new.
+	portfolioWithAccount1AndAccountWithoutTransactions addElement: accountWithoutTransactions.
+	portfolioWithAccount1AndAccountWithoutTransactions addElement: account1.
+	
+	emptyPortfolio := Portfolio new.
+	
+	portfolioWithAccountWithoutTransactions := Portfolio new.
+	portfolioWithAccountWithoutTransactions addElement: accountWithoutTransactions.
+	
+	portfolioWithPortfolio := Portfolio new.
+	portfolioWithPortfolio addElement: portfolioWithAccount1.
+	
+	portfolioWithAccount3 := Portfolio new.
+	portfolioWithAccount3 addElement: account3.
+
+	
+
+! !
+
+
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #ReceptiveAccountTest
 	instanceVariableNames: ''
@@ -89,15 +424,15 @@ test07AccountKnowsItsTransactions
 ! !
 
 
-!classDefinition: #TransferTest category: 'ServiciosFinancieros-Ejercicio'!
-TestCase subclass: #TransferTest
-	instanceVariableNames: 'transactions'
+!classDefinition: #TransferTests category: 'ServiciosFinancieros-Ejercicio'!
+TestCase subclass: #TransferTests
+	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'JFG 6/6/2022 14:53:42'!
-test01
+!TransferTests methodsFor: 'transfer tests' stamp: 'SJ 6/8/2022 19:10:22'!
+test01aTransferenceWithdrawsAndDepositsTheCorrectAmountOfMoneyInTheInvolvedAccounts
 	"una transferencia es entre 2 receptive accounts"
 	"deberia poder consultar cada contraparte de la accion (es decir la extraccion a la cuenta de la q se extrajo el dinero y el deposito en la cuenta donde de deposito el dinero) -> se diferencia la extraccion o un deposito comun de otra extraccion/deposito para transferencia"
 	"una transferencia necesita: 2 cuentas (en donde se hace la extraccion y en donde se hace el deposito) y el monto"
@@ -115,8 +450,8 @@ test01
 	
 ! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'SJ 6/6/2022 10:40:53'!
-test02
+!TransferTests methodsFor: 'transfer tests' stamp: 'SJ 6/8/2022 19:12:04'!
+test02aTransferenceCanWithdrawMoneyFromAnAccountEvenIfTheBalanceOfSaidAccountIsLeftOnNegative
 	"una transferencia donde una cuenta puede quedar en negativo"
 	|accountOfDeposit accountOfWithdraw transfer transferValue|
 	
@@ -129,23 +464,27 @@ test02
 	self assert: accountOfWithdraw balance equals: transferValue negated.
 	self assert: accountOfDeposit balance equals: transferValue.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'SJ 6/6/2022 11:39:25'!
-test03
+!TransferTests methodsFor: 'transfer tests' stamp: 'SJ 6/8/2022 19:13:03'!
+test03whenConsultedATransferenceHasTwoLegs
 	"una transferencia donde se consultan cada pata"
-	|accountOfDeposit accountOfWithdraw transfer transferValue|
+	|accountOfDeposit accountOfWithdraw transfer transferValue aDepositLeg aWithdrawLeg |
 	
 	accountOfDeposit := ReceptiveAccount new.
 	accountOfWithdraw := ReceptiveAccount new.
 	transferValue := 50 * peso.
 	
+	aWithdrawLeg := Withdraw register: transferValue on: accountOfWithdraw.
+	aDepositLeg := Deposit register: transferValue on: accountOfDeposit.
+	
+	
 	transfer := Transfer from: accountOfWithdraw to: accountOfDeposit withValue: transferValue.	
 	
-	self assert: transfer withdrawLeg equals: (accountOfWithdraw "transactions last").
-	self assert: transfer depositLeg equals: (accountOfDeposit "transactions last").
+	self assert: (transfer withdrawLeg isKindOf: Withdraw).
+	self assert: (transfer depositLeg isKindOf: Deposit).
 	! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'SJ 6/6/2022 11:41:59'!
-test04
+!TransferTests methodsFor: 'transfer tests' stamp: 'SJ 6/8/2022 19:14:03'!
+test04givenATransferenceTheCounterPartsOfEachLegAreDemanded
 	"una transferencia donde se consultan las contrapartes"
 	|accountOfDeposit accountOfWithdraw transfer transferValue|
 	
@@ -158,8 +497,8 @@ test04
 	self assert: (transfer hasCounterPartOf: transfer withdrawLeg) equals: transfer depositLeg.
 	self assert: (transfer hasCounterPartOf: transfer depositLeg) equals: transfer withdrawLeg.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'SJ 6/6/2022 11:48:37'!
-test05
+!TransferTests methodsFor: 'transfer tests' stamp: 'SJ 6/8/2022 19:15:16'!
+test05aTransferenceCanBeMadeBothWaysUsingTwoDifferentAccounts
 	"Una transferencia de ida y vuelta"
 	|accountOfDeposit accountOfWithdraw transfer transferValue|
 	
@@ -174,8 +513,8 @@ test05
 	self assert: accountOfWithdraw balance equals: 100 * peso.
 	self assert: accountOfDeposit balance equals: 0 * peso.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'SJ 6/6/2022 11:53:35'!
-test06
+!TransferTests methodsFor: 'transfer tests' stamp: 'SJ 6/8/2022 19:16:26'!
+test06whenATransferenceIsBeingMadeTheAccountsInvolvedCanNotBeTheSame
 	"Una transferencia donde la cuenta de extraccion no puede ser igual a la cuenta de deposito"
 	|account transferValue|
 	
@@ -186,8 +525,8 @@ test06
 		raise: Error
 		withExceptionDo: [ :anError | self assert: (Transfer invalidTransactionErrorDescription) equals: (anError messageText)].! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'SJ 6/6/2022 12:31:53'!
-test07
+!TransferTests methodsFor: 'transfer tests' stamp: 'SJ 6/8/2022 19:17:10'!
+test07whenATransferenceIsBeingMadeTheTransferValueCanNotBeNegative
 	"una transferencia no puede hacerse si el transferValue es negativo"
 	|accountOfDeposit accountOfWithdraw transferValue|
 
@@ -199,8 +538,8 @@ test07
 		raise: Error
 		withExceptionDo: [ :anError | self assert: (Transfer invalidTransactionErrorDescription) equals: (anError messageText)].! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'SJ 6/6/2022 14:45:37'!
-test08
+!TransferTests methodsFor: 'transfer tests' stamp: 'SJ 6/8/2022 19:17:38'!
+test08whenATransferenceIsBeingMadeTheTransferValueCanNotBeZero
 	"una transferencia no puede hacerse si el transferValue es cero"
 	|accountOfDeposit accountOfWithdraw transferValue|
 
@@ -212,19 +551,348 @@ test08
 		raise: Error
 		withExceptionDo: [ :anError | self assert: (Transfer invalidTransactionErrorDescription) equals: (anError messageText)].! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'JFG 6/6/2022 15:22:14'!
-test09
-	"una transferencia donde se consultan las contrapartes"
-	|accountOfDeposit accountOfWithdraw transfer transferValue|
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'SJ 6/8/2022 19:23:54'!
+test10givenANotEmptyPortfolioWithTransactionsRegisteredTheBalanceCanBeCalculated
+	"Obtenemos el balance de un portfolio"
 	
-	accountOfDeposit := ReceptiveAccount new.
-	accountOfWithdraw := ReceptiveAccount new.
-	transferValue := 50 * peso.
+	| portfolio anAccount1 anAccount2 |
 	
-	transfer := Transfer from: accountOfWithdraw to: accountOfDeposit withValue: transferValue.	
+	anAccount1 := ReceptiveAccount new.
+	anAccount2 := ReceptiveAccount new.
+	Deposit register: 100 * peso on: anAccount1.
+	Deposit register: 100 * peso on: anAccount2.
+	portfolio := Portfolio new.
 	
-	self assert: (transfer counterPartOf: accountOfWithdraw) equals: transferValue.
-	self assert: (transfer counterPartOf: accountOfDeposit) equals: transferValue negated.
+	portfolio addElement: anAccount1.
+	portfolio addElement: anAccount2.
+	
+	self assert: portfolio balance equals: (200 * peso).
+	
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'SJ 6/8/2022 19:25:03'!
+test11givenAPortfolioWithAnotherPortfolioContainigAccountsWithRegisteredTransactionsTheTotalBalanceCanBeCalculated
+	"Obtenemos el balance de un portfolio con un portfolio adentro"
+	
+	| portfolio portfolioAux anAccount1 anAccount2 |
+	
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+	
+	anAccount1 := ReceptiveAccount new.
+	anAccount2 := ReceptiveAccount new.
+	
+	Deposit register: 100 * peso on: anAccount2.
+	Deposit register: 50 * peso on: anAccount1.
+	
+	portfolioAux addElement: anAccount1.
+
+	portfolio addElement: portfolioAux.
+	portfolio addElement: anAccount2.
+	
+	self assert: portfolio balance equals: (150 * peso).
+	
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:03:22'!
+test12givenAPortfolioContainingAnAccountThePortfolioRegistersTheTransactionOfSaidAccount
+	"Chequeamos que la única cuenta que se encuentra en el portfolio haya registrado una transacción"
+	
+	| portfolio anAccount deposit |
+	
+	portfolio := Portfolio new.
+	anAccount := ReceptiveAccount new.
+	
+	deposit := Deposit register: 100 * peso on: anAccount.
+
+	portfolio addElement: anAccount.
+	
+	self assert: (portfolio hasRegistered: deposit) = true.
+	
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'SJ 6/8/2022 19:28:47'!
+test13givenAPortfolioContainingTwoAccountsButOnlyOneWithARegisteredTransactionThePortfolioRegistersTheTransaction
+	"Chequeamos que la segunda cuenta que se encuentra en el portfolio haya registrado una transacción"
+	
+	| portfolio anAccount1 anAccount2 deposit |
+	
+	portfolio := Portfolio new.
+	anAccount1 := ReceptiveAccount new.
+	anAccount2 := ReceptiveAccount new.
+
+	
+	deposit := Deposit register: 100 * peso on: anAccount2.
+
+	portfolio addElement: anAccount1.
+	portfolio addElement: anAccount2.
+
+	self assert: (portfolio hasRegistered: deposit).
+	
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'SJ 6/8/2022 19:29:23'!
+test14givenAnEmptyPortfolioTheTotalBalanceIsZero
+	"Chequeamos que un portfolio vacio tenga balance=0"
+	
+	| portfolio |
+	portfolio := Portfolio new.
+
+	self assert: portfolio balance equals: 0.
+	
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'SJ 6/8/2022 19:31:48'!
+test15givenAPortfolioContainingAnAccountWithNoTransactionsTheBalanceOfThePortfolioIsZero
+	"Chequeamos que un portfolio no vacio con sus cuentas con balance = 0 tenga balance=0"
+	
+	| portfolio anAccount |
+	portfolio := Portfolio new.
+
+	anAccount := ReceptiveAccount new.
+	portfolio addElement: anAccount.
+	
+	self assert: portfolio balance equals: 0.
+	
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'JFG 6/8/2022 23:56:06'!
+test16givenAPortfolioWithAnotherPortfolioContainingAnAccountWithATransactionTheFirstPortfolioRegistersTheTransaction
+	"Chequeamos que un portfolio con un portfolio dentro encuentre la transacción"
+	
+	| portfolio portfolioAux anAccount deposit |
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+
+	anAccount := ReceptiveAccount new.
+	deposit := Deposit register: 100 * peso on: anAccount.
+	
+	portfolioAux addElement: anAccount.
+	portfolio addElement: portfolioAux.
+	
+	self assert: (portfolio hasRegistered: deposit).
+
+	
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:11:56'!
+test17givenAPortfolioContainingAnAccountWithNoTransactionsThePortfolioDoesNotRegisterTheTransactionSent
+	"Chequeamos que un portfolio con un portfolio sin transacciones registradas no encuentre ninguna"
+	
+	| portfolio anAccount deposit aUselessAccount |
+	portfolio := Portfolio new.
+
+	anAccount := ReceptiveAccount new.
+	aUselessAccount := ReceptiveAccount new.
+	
+	deposit := Deposit register: 100 * peso on: aUselessAccount.
+	
+	portfolio addElement: anAccount.
+		
+	self deny: (portfolio hasRegistered: deposit).
+		
+	
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 00:11:28'!
+test18givenAnEmptyPortfolioTheTransactionSentIsNotRegistered
+	"Chequeamos que un portfolio vacio no encuentre transacciones registradas que se hicieron en una cuenta no incluida en el portfafolio"
+	
+	| portfolio anAccount deposit |
+	portfolio := Portfolio new.
+	
+	anAccount := ReceptiveAccount new.
+	
+	deposit := Deposit register: 100 * peso on: anAccount.
+	
+	self deny: (portfolio hasRegistered: deposit).
+	
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'SJ 6/8/2022 19:38:58'!
+test19givenAPortfolioContainingAnAccountWithTransactionsThePortfolioObtainsAllTransactions
+	"Chequeamos que un portfolio con una cuenta pueda obtener todas las transacciones de esa cuenta"
+	
+	| portfolio anAccount withdraw1 deposit2 withdraw2 deposit1 transactions |
+	portfolio := Portfolio new.
+	anAccount := ReceptiveAccount new.
+	
+	transactions := OrderedCollection new.
+	deposit1 := Deposit register: 100 * peso on: anAccount.
+	withdraw1 := Withdraw register: 50 * peso on: anAccount.
+	deposit2 := Deposit register: 100 * peso on: anAccount.
+	withdraw2 := Withdraw register: 50 * peso on: anAccount.
+	
+	transactions addAll: {deposit1. withdraw1. deposit2. withdraw2}.
+	
+	portfolio addElement: anAccount.
+	self assert: (portfolio transactions) equals: transactions.
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 01:05:12'!
+test20givenAnEmptyPortfolioNoTransactionCanBeObtained
+	"Chequeamos que un portfolio vacio no tenga transacciones"
+	
+	| portfolio emptyCollection |
+	portfolio := Portfolio new.
+	emptyCollection := OrderedCollection new.
+
+	self assert: (portfolio transactions) equals: emptyCollection.
+	
+	
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'SJ 6/8/2022 19:45:37'!
+test21givenAPortfolioContainingAnAccountWithNoTransactionsThereAreNoTransactionsInPortfolio
+	"Chequeamos que un portfolio vacio no tenga transacciones registradas"
+	
+	| portfolio anAccount transactions |
+	portfolio := Portfolio new.
+	anAccount := ReceptiveAccount new.
+	transactions := OrderedCollection new.
+
+	portfolio addElement: anAccount.
+
+	self assert: (portfolio transactions) equals: transactions.
+	
+	
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'SJ 6/8/2022 19:48:50'!
+test22givenAPortfolioContainingAnotherPortfolioWithANotEmptyAccountThePortfolioObtainsAllTransactions
+	"Chequeamos que un portfolio con un portfolio dentro obtenga todas las transacciones registradas en una cuenta incluida en este último"
+	
+	| portfolio portfolioAux anAccount deposit transactions |
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+
+	anAccount := ReceptiveAccount new.
+	deposit := Deposit register: 100 * peso on: anAccount.
+	transactions := OrderedCollection new.
+	transactions add: deposit.
+	portfolioAux addElement: anAccount.
+	portfolio addElement: portfolioAux.
+	
+	self assert: (portfolio transactions) equals: transactions.
+	
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'SJ 6/8/2022 19:51:14'!
+test23canNotAddTheSameAccountTwiceInAPortfolio
+	"Chequeamos que no se pueda agregar una cuenta ya agregada"
+	
+	| portfolio anAccount |
+	portfolio := Portfolio new.
+
+	anAccount := ReceptiveAccount new.
+	portfolio addElement: anAccount.
+	
+	self
+		should: [ portfolio addElement: anAccount ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio elementAlreadyIncludedErrorDescription].
+		
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'SJ 6/8/2022 19:52:55'!
+test24canNotAddAnAccountToAPortfolioThatContainsAnotherPortfolioWithTheSameAccount
+	"Chequeamos que no se pueda agregar una cuenta que ya ha sido agregada a un portfolio agregado"
+	
+	| portfolio portfolioAux anAccount |
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+	anAccount := ReceptiveAccount new.
+	
+	portfolioAux addElement: anAccount.
+	portfolio addElement: portfolioAux.
+	
+	self
+		should: [ portfolio addElement: anAccount ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio elementAlreadyIncludedErrorDescription].
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'SJ 6/8/2022 19:54:03'!
+test25canNotAddTheSamePortfolioInAPortfolio
+	"Chequeamos que no se pueda agregar un portfolio que sea igual a self"
+	
+	| portfolio portfolioAux anAccount |
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+	anAccount := ReceptiveAccount new.
+	
+	portfolioAux addElement: anAccount.
+	portfolio addElement: portfolioAux.
+	
+	self
+		should: [ portfolio addElement: portfolio ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText = Portfolio canNotAddItselfErrorDescription].
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'SJ 6/8/2022 19:58:49'!
+test26canNotAddTheSameAccountInAPortfolioThatIsContainedInAnotherPortfolioThatAlreadyAddedTheAccount
+	"Chequeamos que no se pueda agregar una cuenta que ya se agrego"
+	
+	| portfolio portfolioAux anAccount |
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+	anAccount := ReceptiveAccount new.
+	
+	portfolio addElement: anAccount.
+	portfolio addElement: portfolioAux.
+	
+	self
+		should: [ portfolioAux addElement: anAccount ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText equals: Portfolio elementAlreadyIncludedErrorDescription].
+	
+		! !
+
+!TransferTests methodsFor: 'portfolio tests' stamp: 'SJ 6/8/2022 20:00:31'!
+test27canNotAddAPortfolioInAPortfolioWithAnAccountAlreadyAddedInSecondPortfolio
+	"Chequeamos que no se pueda agregar un portfolio a otro portfolio con cuentas agregadas iguales"
+	
+	| portfolio portfolioAux anAccount |
+	portfolio := Portfolio new.
+	portfolioAux := Portfolio new.
+	anAccount := ReceptiveAccount new.
+	
+	portfolio addElement: anAccount.
+	portfolioAux addElement: anAccount.
+	
+	self
+		should: [ portfolio addElement: portfolioAux ]
+		raise: Error - MessageNotUnderstood 
+		withExceptionDo: [ :anError |
+			self assert: anError messageText equals: Portfolio elementAlreadyIncludedErrorDescription].
+	
+		! !
+
+
+!TransferTests methodsFor: 'setup' stamp: 'JFG 6/9/2022 00:30:27'!
+setUp
 ! !
 
 
@@ -321,6 +989,114 @@ for: aValue
 	^ self new initializeFor: aValue ! !
 
 
+!classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Portfolio
+	instanceVariableNames: 'elements transactions precedingPortfolio'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Portfolio methodsFor: 'operations' stamp: 'JFG 6/8/2022 23:32:24'!
+addElement: anElement
+	self assertElementIsNotContainedInPortfolio: anElement.
+	anElement assignPortfolioContainingIt: self.
+	elements add: anElement.
+			
+! !
+
+!Portfolio methodsFor: 'operations' stamp: 'JFG 6/9/2022 00:10:47'!
+hasRegistered: aTransaction
+	
+	^ elements anySatisfy: [:anElement | (anElement hasRegistered: aTransaction)].
+
+	! !
+
+
+!Portfolio methodsFor: 'initialization' stamp: 'JFG 6/8/2022 23:41:55'!
+assignPortfolioContainingIt: aPortfolio
+	precedingPortfolio := aPortfolio.! !
+
+!Portfolio methodsFor: 'initialization' stamp: 'JFG 6/8/2022 23:41:55'!
+initialize
+	
+	elements := OrderedCollection new.
+	precedingPortfolio := nil.
+	! !
+
+
+!Portfolio methodsFor: 'accessing' stamp: 'JFG 6/8/2022 23:32:24'!
+balance
+	| balance |
+	balance := 0.
+	
+	elements ifEmpty: [^0].
+	
+	elements do: [:anElement | balance := balance + anElement balance].
+
+	^balance.
+	
+! !
+
+!Portfolio methodsFor: 'accessing' stamp: 'JFG 6/8/2022 23:32:24'!
+elements
+	^ elements ! !
+
+!Portfolio methodsFor: 'accessing' stamp: 'JFG 6/8/2022 23:41:55'!
+getMasterPortfolio
+	precedingPortfolio = nil ifTrue: [^self].
+	^ precedingPortfolio getMasterPortfolio.! !
+
+!Portfolio methodsFor: 'accessing' stamp: 'JFG 6/9/2022 01:04:28'!
+transactions
+
+	^elements inject: OrderedCollection new into: [ :listOfTransactions :anAccount | listOfTransactions , anAccount transactions.].
+
+	
+	! !
+
+
+!Portfolio methodsFor: 'error handler' stamp: 'SJ 6/8/2022 18:39:29'!
+elementIsAlreadyIncluded
+	self error: self class elementAlreadyIncludedErrorDescription.! !
+
+
+!Portfolio methodsFor: 'assertions' stamp: 'SJ 6/8/2022 18:14:23'!
+assertAccountFrom: aPortfolio isNotEqualTo: anAccount
+	self assertPortfolioDoesNotInclude: anAccount.! !
+
+!Portfolio methodsFor: 'assertions' stamp: 'JFG 6/8/2022 23:29:54'!
+assertElementIsNotContainedInPortfolio: anElement
+	"aca empiezo a recorrer todo el arbol desde el portfolio que contiene a todos, desde el nivel mas grande"
+	"voy al nivel mas alto, empiezo a recorrer desde ahi, masterPortfolio es el nivel mas alto"
+	self getMasterPortfolio assertPortfolioDoesNotInclude: anElement.
+	(anElement isKindOf: Portfolio) ifTrue: [
+		anElement elements do: [ :Element | 
+			self assertElementIsNotContainedInPortfolio: Element]].
+	
+	
+	! !
+
+!Portfolio methodsFor: 'assertions' stamp: 'JFG 6/8/2022 23:32:24'!
+assertPortfolioDoesNotInclude: anElement
+	self = anElement ifTrue: [self error: self class canNotAddItselfErrorDescription].
+	elements do: [:element | element assertAccountFrom: self isNotEqualTo: anElement].! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Portfolio class' category: 'ServiciosFinancieros-Ejercicio'!
+Portfolio class
+	instanceVariableNames: ''!
+
+!Portfolio class methodsFor: 'error descriptions' stamp: 'SJ 6/7/2022 20:04:05'!
+canNotAddItselfErrorDescription
+	^'Cannot add portfolio to itself'.! !
+
+!Portfolio class methodsFor: 'error descriptions' stamp: 'JFG 6/7/2022 17:09:10'!
+elementAlreadyIncludedErrorDescription
+	
+	^'Element has already been added'! !
+
+
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #ReceptiveAccount
 	instanceVariableNames: 'transactions'
@@ -359,10 +1135,14 @@ transactions
 	^ transactions copy! !
 
 
-!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'JFG 6/6/2022 15:26:29'!
-isLeg
-	
-	! !
+!ReceptiveAccount methodsFor: 'assertions' stamp: 'SJ 6/8/2022 18:38:50'!
+assertAccountFrom: aPortfolio isNotEqualTo: anElement
+	self = anElement ifTrue: [aPortfolio elementIsAlreadyIncluded]. ! !
+
+
+!ReceptiveAccount methodsFor: 'accessing - private' stamp: 'SJ 6/8/2022 16:36:32'!
+assignPortfolioContainingIt: aPortfolio
+	^self.! !
 
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros-Ejercicio'!
@@ -378,10 +1158,10 @@ hasCounterPartOf: aReceptiveAccount
 	(aReceptiveAccount = withdrawLeg) ifTrue: [^depositLeg] ifFalse: [^withdrawLeg].! !
 
 
-!Transfer methodsFor: 'private accessing' stamp: 'JFG 6/6/2022 15:28:59'!
-counterPartOf: anAccount 
+!Transfer methodsFor: 'private accessing' stamp: 'SJ 6/8/2022 18:53:11'!
+counterPartOf: aTransactionLeg 
 
-	(anAccount = withdrawLeg) ifTrue: [^ value] ifFalse: [^ value negated].
+	(aTransactionLeg = withdrawLeg) ifTrue: [^ depositLeg ] ifFalse: [^ withdrawLeg].
 ! !
 
 !Transfer methodsFor: 'private accessing' stamp: 'SJ 6/6/2022 00:40:52'!
@@ -393,11 +1173,15 @@ withdrawLeg
 	^withdrawLeg.! !
 
 
-!Transfer methodsFor: 'initialization' stamp: 'SJ 6/6/2022 11:34:39'!
+!Transfer methodsFor: 'initialization' stamp: 'SJ 6/8/2022 18:48:43'!
 initializeFrom: accountOfWithdrawal to: accountOfDeposit for: AmountOfMoneyToBeTransferred 
-	withdrawLeg := accountOfWithdrawal "register: (Withdraw for: AmountOfMoneyToBeTransferred)".
-	depositLeg := accountOfDeposit "register: (Deposit for: AmountOfMoneyToBeTransferred)".
-	value := AmountOfMoneyToBeTransferred.! !
+	
+	withdrawLeg := Withdraw register: AmountOfMoneyToBeTransferred on: accountOfWithdrawal.
+	depositLeg := Deposit register: AmountOfMoneyToBeTransferred on: accountOfDeposit.
+	value := AmountOfMoneyToBeTransferred.
+	
+	
+	! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -409,15 +1193,12 @@ Transfer class
 for: aValue
 	^ self new initializeFor: aValue ! !
 
-!Transfer class methodsFor: 'instance creation' stamp: 'SJ 6/6/2022 12:39:13'!
+!Transfer class methodsFor: 'instance creation' stamp: 'JFG 6/7/2022 15:15:32'!
 from: anAccountOfWithdrawal to: anAccountOfDeposit withValue: AmountOfMoneyToBeTransferred 
 	
 	((self isAValidTransactionWith: anAccountOfWithdrawal and: anAccountOfDeposit) 
 		and: [self transferValueIsValid: AmountOfMoneyToBeTransferred])
 		ifFalse: [Transfer error: self invalidTransactionErrorDescription].
-	
-	Withdraw register: AmountOfMoneyToBeTransferred on: anAccountOfWithdrawal.
-	Deposit register: AmountOfMoneyToBeTransferred on: anAccountOfDeposit.
 	
 	^self new initializeFrom: anAccountOfWithdrawal to: anAccountOfDeposit for: AmountOfMoneyToBeTransferred.
 	
