@@ -1,19 +1,19 @@
 !classDefinition: #PortfolioTests category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #PortfolioTests
-	instanceVariableNames: 'account1 account2 deposit1 deposit2 accountWithoutTransactions portfolioWithAccount1 portfolioWithAccount1AndAccount2 portfolioWithAccount2AndPortfolio portfolioWithAccount1AndAccountWithoutTransactions emptyPortfolio portfolioWithAccountWithoutTransactions portfolioWithPortfolio transactionss portfolioWithAccount3 account3 emptyTransactions oneTransactionCollection'
+	instanceVariableNames: 'account1 account2 deposit1 deposit2 portfolioWithAccount1 portfolio portfolioWithAccountWithoutTransactions noneTransactions account1Transactions accountWithoutTransactions portfolioWithAccount2'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:39:19'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:51:31'!
 test01givenAnEmptyPortfolioTheTotalBalanceIsZero
 
-	self assert: emptyPortfolio balance equals: 0.
+	self assert: portfolio balance equals: 0.
 	
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:39:22'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:45:16'!
 test02givenAPortfolioContainingAnAccountWithNoTransactionsTheBalanceOfThePortfolioIsZero
 
 	self assert: portfolioWithAccountWithoutTransactions balance equals: 0.
@@ -21,31 +21,33 @@ test02givenAPortfolioContainingAnAccountWithNoTransactionsTheBalanceOfThePortfol
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:39:08'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:13:28'!
 test03givenANotEmptyPortfolioWithTransactionsRegisteredTheBalanceCanBeCalculated
 
-	self assert: portfolioWithAccount1AndAccount2 balance equals: (150 * peso).
+	self assert: portfolioWithAccount1 balance equals: (100 * peso).
 	
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:53:23'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:43:40'!
 test04givenAPortfolioWithAnotherPortfolioContainigAccountsWithRegisteredTransactionsTheTotalBalanceCanBeCalculated
 
-	self assert: portfolioWithAccount2AndPortfolio balance equals: (150 * peso).
+	portfolioWithAccount1 addElement: portfolioWithAccount2.
+	
+	self assert: portfolioWithAccount1 balance equals: (150 * peso).
 	
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:53:17'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:51:31'!
 test05givenAnEmptyPortfolioTheTransactionSentIsNotRegistered
 	
-	self deny: (emptyPortfolio hasRegistered: deposit1).
+	self deny: (portfolio hasRegistered: deposit1).
 	
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:53:11'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:45:16'!
 test06givenAPortfolioContainingAnAccountWithNoTransactionsThePortfolioDoesNotRegisterTheTransactionSent
 
 	self deny: (portfolioWithAccountWithoutTransactions hasRegistered: deposit1).
@@ -54,60 +56,66 @@ test06givenAPortfolioContainingAnAccountWithNoTransactionsThePortfolioDoesNotReg
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:53:07'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:44:51'!
 test07givenAPortfolioContainingTwoAccountsButOnlyOneWithARegisteredTransactionThePortfolioRegistersTheTransaction
 
-	self assert: (portfolioWithAccount1AndAccountWithoutTransactions hasRegistered: deposit1).
+	portfolioWithAccount1 addElement: accountWithoutTransactions.
+	
+	self assert: (portfolioWithAccount1 hasRegistered: deposit1).
 	
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:53:03'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:21:01'!
 test08givenAPortfolioContainingAnAccountThePortfolioRegistersTheTransactionOfSaidAccount
 	
-	self assert: (portfolioWithAccount2AndPortfolio hasRegistered: deposit1).
+	self assert: (portfolioWithAccount1 hasRegistered: deposit1).
 	
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:52:57'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:51:31'!
 test09givenAPortfolioWithAnotherPortfolioContainingAnAccountWithATransactionTheFirstPortfolioRegistersTheTransaction
 
-	self assert: (portfolioWithPortfolio hasRegistered: deposit1).
+	portfolio addElement: portfolioWithAccount1.
+	
+	self assert: (portfolio hasRegistered: deposit1).
 
 	
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:52:51'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:52:47'!
 test10givenAnEmptyPortfolioNoTransactionCanBeObtained
 
-	self assert: (emptyPortfolio transactions) equals: emptyTransactions.
+	self assert: (portfolio transactions) equals: noneTransactions.
 	
 	
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:52:47'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:52:47'!
 test11givenAPortfolioContainingAnAccountWithNoTransactionsThereAreNoTransactionsInPortfolio
 
-	self assert: (portfolioWithAccountWithoutTransactions transactions) equals: emptyTransactions.
+	self assert: (portfolioWithAccountWithoutTransactions transactions) equals: noneTransactions.
 	
 	
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:52:41'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:37:17'!
 test12givenAPortfolioContainingAnAccountWithTransactionsThePortfolioObtainsAllTransactions
 
-	self assert: (portfolioWithAccount3 transactions) equals: transactionss.
+	self assert: (portfolioWithAccount1 transactions) equals: account1Transactions.
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:52:36'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:51:31'!
 test13givenAPortfolioContainingAnotherPortfolioWithANotEmptyAccountThePortfolioObtainsAllTransactions
+
+	portfolio addElement: portfolioWithAccount1.
 	
-	self assert: (portfolioWithAccount1 transactions) equals: oneTransactionCollection.
+	self assert: (portfolio transactions) equals: account1Transactions.
 	
 	
 		! !
@@ -124,49 +132,50 @@ test14canNotAddTheSameAccountTwiceInAPortfolio
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:52:24'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:51:31'!
 test15canNotAddAnAccountToAPortfolioThatContainsAnotherPortfolioWithTheSameAccount
 	
+	portfolio addElement: portfolioWithAccount1.
+	
 	self
-		should: [ portfolioWithAccount2AndPortfolio addElement: account1 ]
+		should: [portfolio addElement: account1 ]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
-			self assert: anError messageText = Portfolio elementAlreadyIncludedErrorDescription].
+			self assert: anError messageText equals: Portfolio elementAlreadyIncludedErrorDescription].
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:52:19'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:51:31'!
 test16canNotAddTheSamePortfolioInAPortfolio
 	
 	self
-		should: [ portfolioWithAccount2AndPortfolio addElement: portfolioWithAccount2AndPortfolio ]
+		should: [ portfolio addElement: portfolio ]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
 			self assert: anError messageText = Portfolio canNotAddItselfErrorDescription].
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:52:13'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:51:31'!
 test17canNotAddTheSameAccountInAPortfolioThatIsContainedInAnotherPortfolioThatAlreadyAddedTheAccount
 	
-	| portfolio |
-	portfolio := Portfolio new.
-	portfolio addElement: account1.
-	portfolio addElement: portfolioWithAccount1.
+	portfolioWithAccount1 addElement: portfolio.
 	
 	self
-		should: [ portfolioWithAccount1 addElement: account1 ]
+		should: [ portfolio addElement: account1 ]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
 			self assert: anError messageText equals: Portfolio elementAlreadyIncludedErrorDescription].
+		
 	
 		! !
 
-!PortfolioTests methodsFor: 'portfolio tests' stamp: 'SJ 6/9/2022 12:51:04'!
+!PortfolioTests methodsFor: 'portfolio tests' stamp: 'JFG 6/9/2022 16:51:31'!
 test18canNotAddAPortfolioInAPortfolioWithAnAccountAlreadyAddedInSecondPortfolio
 	
+	portfolio addElement: account1.
 	self
-		should: [ portfolioWithAccount1AndAccountWithoutTransactions addElement: portfolioWithAccount1 ]
+		should: [ portfolio addElement: portfolioWithAccount1 ]
 		raise: Error - MessageNotUnderstood 
 		withExceptionDo: [ :anError |
 			self assert: anError messageText equals: Portfolio elementAlreadyIncludedErrorDescription].
@@ -174,54 +183,33 @@ test18canNotAddAPortfolioInAPortfolioWithAnAccountAlreadyAddedInSecondPortfolio
 		! !
 
 
-!PortfolioTests methodsFor: 'setup' stamp: 'SJ 6/9/2022 12:35:37'!
+!PortfolioTests methodsFor: 'setup' stamp: 'JFG 6/9/2022 16:52:47'!
 setUp
-	|deposit3 deposit4|
+
 	account1 := ReceptiveAccount new.
 	account2 := ReceptiveAccount new.
-	account3 := ReceptiveAccount new.
+	accountWithoutTransactions := ReceptiveAccount new.
 
-	
+	"Accounts 1 and 2 have transactions registered"
 	deposit1 := Deposit register: 100 * peso on: account1 .
 	deposit2 :=  Deposit register: 50 * peso on: account2.
-	deposit3 := Deposit register: 100 * peso on: account3.
-	deposit4 := Deposit register: 50 * peso on: account3.
+
+	noneTransactions := OrderedCollection new.
 	
-	transactionss := OrderedCollection new.
-	transactionss addAll: {deposit3. deposit4}.
+	account1Transactions := OrderedCollection new.
+	account1Transactions add: deposit1.
 	
-	emptyTransactions := OrderedCollection new.
-	
-	oneTransactionCollection := OrderedCollection new.
-	oneTransactionCollection add: deposit1.
-	
-	accountWithoutTransactions := ReceptiveAccount new.
-	
+	portfolio := Portfolio new.
+		
 	portfolioWithAccount1 := Portfolio new.
 	portfolioWithAccount1 addElement: account1.
 	
-	portfolioWithAccount1AndAccount2 := Portfolio new.
-	portfolioWithAccount1AndAccount2 addElement: account1.
-	portfolioWithAccount1AndAccount2 addElement: account2.
-	
-	portfolioWithAccount2AndPortfolio := Portfolio new.
-	portfolioWithAccount2AndPortfolio addElement: portfolioWithAccount1.
-	portfolioWithAccount2AndPortfolio addElement: account2.
-	
-	portfolioWithAccount1AndAccountWithoutTransactions := Portfolio new.
-	portfolioWithAccount1AndAccountWithoutTransactions addElement: accountWithoutTransactions.
-	portfolioWithAccount1AndAccountWithoutTransactions addElement: account1.
-	
-	emptyPortfolio := Portfolio new.
+	portfolioWithAccount2 := Portfolio new.
+	portfolioWithAccount2 addElement: account2.
 	
 	portfolioWithAccountWithoutTransactions := Portfolio new.
 	portfolioWithAccountWithoutTransactions addElement: accountWithoutTransactions.
-	
-	portfolioWithPortfolio := Portfolio new.
-	portfolioWithPortfolio addElement: portfolioWithAccount1.
-	
-	portfolioWithAccount3 := Portfolio new.
-	portfolioWithAccount3 addElement: account3.
+
 
 	
 
@@ -483,20 +471,22 @@ AccountTransaction subclass: #TransferTransaction
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferTransaction methodsFor: 'as yet unclassified' stamp: 'SJ 6/9/2022 14:17:12'!
-counterPart
-	self subclassResponsibility.! !
-
-!TransferTransaction methodsFor: 'as yet unclassified' stamp: 'SJ 6/9/2022 14:19:01'!
-initializeWith: aTransfer
-	completeTransference := aTransfer.! !
-
-!TransferTransaction methodsFor: 'as yet unclassified' stamp: 'SJ 6/9/2022 14:22:37'!
+!TransferTransaction methodsFor: 'value' stamp: 'SJ 6/9/2022 14:22:37'!
 value
 	^completeTransference value.! !
 
-!TransferTransaction methodsFor: 'as yet unclassified' stamp: 'SJ 6/9/2022 14:20:24'!
+!TransferTransaction methodsFor: 'value' stamp: 'SJ 6/9/2022 14:20:24'!
 valueForBalance
+	self subclassResponsibility.! !
+
+
+!TransferTransaction methodsFor: 'initialization' stamp: 'SJ 6/9/2022 14:19:01'!
+initializeWith: aTransfer
+	completeTransference := aTransfer.! !
+
+
+!TransferTransaction methodsFor: 'accessing' stamp: 'SJ 6/9/2022 14:17:12'!
+counterPart
 	self subclassResponsibility.! !
 
 
@@ -618,8 +608,10 @@ balance
 elements
 	^ elements ! !
 
-!Portfolio methodsFor: 'accessing' stamp: 'JFG 6/8/2022 23:41:55'!
+!Portfolio methodsFor: 'accessing' stamp: 'JFG 6/9/2022 16:59:12'!
 getMasterPortfolio
+	"Recorre hasta llegar al nivel mas alto (El porfatolio que se encuentra en la raiz del arbol) y lo devuelve"
+	
 	precedingPortfolio = nil ifTrue: [^self].
 	^ precedingPortfolio getMasterPortfolio.! !
 
@@ -637,14 +629,14 @@ elementIsAlreadyIncluded
 	self error: self class elementAlreadyIncludedErrorDescription.! !
 
 
-!Portfolio methodsFor: 'assertions' stamp: 'SJ 6/8/2022 18:14:23'!
+!Portfolio methodsFor: 'assertions' stamp: 'JFG 6/9/2022 17:03:03'!
 assertAccountFrom: aPortfolio isNotEqualTo: anAccount
 	self assertPortfolioDoesNotInclude: anAccount.! !
 
-!Portfolio methodsFor: 'assertions' stamp: 'JFG 6/8/2022 23:29:54'!
+!Portfolio methodsFor: 'assertions' stamp: 'JFG 6/9/2022 17:02:14'!
 assertElementIsNotContainedInPortfolio: anElement
-	"aca empiezo a recorrer todo el arbol desde el portfolio que contiene a todos, desde el nivel mas grande"
-	"voy al nivel mas alto, empiezo a recorrer desde ahi, masterPortfolio es el nivel mas alto"
+	"Recorre todos los portfolios comenzando por el Portfolio 'Master'. Es decir, el portfolio principal que se encuentra en la raiz del arbol y que no está contenido en ningun otro portfolio"
+	
 	self getMasterPortfolio assertPortfolioDoesNotInclude: anElement.
 	(anElement isKindOf: Portfolio) ifTrue: [
 		anElement elements do: [ :Element | 
@@ -727,7 +719,6 @@ Object subclass: #Transfer
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
-
 
 !Transfer methodsFor: 'private accessing' stamp: 'SJ 6/6/2022 00:40:52'!
 depositLeg
